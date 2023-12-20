@@ -3,20 +3,33 @@ import ReactDOM from "react-dom/client";
 import App from "./App.tsx";
 import "./index.css";
 import { RouterProvider, createHashRouter } from "react-router-dom";
-import { PostPage } from "./pages/post.tsx";
+import { PostDetail, PostList } from "./pages/post.tsx";
+import { MessagePage } from "./pages/message.tsx";
 
 const router = createHashRouter([
   {
-    path: "/",
-    element: <App />,
-  },
-  {
     path: "/post/:id",
-    element: <PostPage />,
+    element: (
+      <App mode="detail">
+        <PostDetail />
+      </App>
+    ),
   },
   {
-    path: "/post",
-    element: <PostPage />,
+    path: "/",
+    element: (
+      <App mode="list">
+        <PostList />
+      </App>
+    ),
+  },
+  {
+    path: "/message",
+    element: (
+      <App mode="message">
+        <MessagePage />
+      </App>
+    ),
   },
 ]);
 
