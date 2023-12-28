@@ -18,7 +18,7 @@ Random.extend({
 
 const mock: Array<MockMethod> = [
   {
-    url: "/api/post",
+    url: "/api/posts",
     method: "get",
     response: () => {
       return Mock.mock({
@@ -33,7 +33,7 @@ const mock: Array<MockMethod> = [
     },
   },
   {
-    url: "/api/post/:id",
+    url: "/api/posts/:id",
     method: "get",
     response: (opt: { query: { id: string } }) => {
       return Mock.mock({
@@ -41,6 +41,21 @@ const mock: Array<MockMethod> = [
         title: "@ctitle",
         postTime: "@datetime",
         content: "@cparagraph",
+      });
+    },
+  },
+  {
+    url: "/api/posts/user/:userid",
+    method: "get",
+    response: () => {
+      return Mock.mock({
+        "list|10": [
+          {
+            id: "@id",
+            title: "@ctitle",
+            postTime: "@datetime",
+          },
+        ],
       });
     },
   },

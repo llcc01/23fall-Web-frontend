@@ -7,6 +7,7 @@ import Chat, { Bubble, useMessages } from "@chatui/core";
 import "@chatui/core/es/styles/index.less";
 import type { MessageProps } from "@chatui/core";
 import "@chatui/core/dist/index.css";
+import "../chatui-theme.css"
 
 const UserList = (props: {
   onUserClick: (id: string, name: string) => void;

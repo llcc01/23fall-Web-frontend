@@ -1,0 +1,67 @@
+:root {
+  --brand-1: #1877ff;
+  --brand-2: #4692ff;
+  --brand-3: #bad6ff;
+}
+.ChatApp,
+.MessageContainer,
+.Navbar,
+.Message .Bubble,
+.QuickReplies,
+.ChatFooter {
+  background-repeat: no-repeat;
+  background-size: cover;
+}
+
+@media screen and (prefers-color-scheme: dark) {
+  :root {
+    --brand-1: #004cb6;
+    --brand-2: #116df0;
+    --brand-3: #355b8b;
+    --white: #7a7a7a;
+    --gray-1: #e2e2e2;
+    --marked-color: #fff;
+    --btn-primary-color: #ffffff;
+  }
+  .ChatApp,
+  .MessageContainer,
+  .Navbar,
+  .Message .Bubble,
+  .QuickReplies,
+  .ChatFooter {
+    background-repeat: no-repeat;
+    background-size: cover;
+  }
+  .ChatApp {
+    background-color: #16161a;
+  }
+  .Notice {
+    background-color: #16161a;
+  }
+  .Navbar {
+    background-color: #16161a;
+  }
+  .Navbar .IconBtn {
+    color: #bebebe;
+  }
+  .Navbar-title {
+    color: #fff;
+  }
+  .Message.left .Bubble {
+    background-color: #757575;
+    color: #fff;
+  }
+  .Message.right .Bubble {
+    background-color: #1c3a6d;
+    color: #fff;
+  }
+  .QuickReply.highlight {
+    background-color: #6b6b6b;
+    color: #fff;
+    border-color: #1b64a1;
+  }
+  .QuickReplies,
+  .ChatFooter {
+    background-color: #16161a;
+  }
+}
