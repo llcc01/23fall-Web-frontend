@@ -6,9 +6,18 @@ import { viteMockServe } from "vite-plugin-mock";
 export default defineConfig({
   plugins: [
     react(),
-    viteMockServe({
-      mockPath: "./mock",
-      enable: true,
-    }),
+    // viteMockServe({
+    //   mockPath: "./mock",
+    //   localEnabled: true,
+    // }),
   ],
+  server: {
+    proxy: {
+      "/api": {
+        target: "http://localhost:8080",
+        changeOrigin: true,
+        rewrite: (path) => path,
+      },
+    },
+  },
 });
