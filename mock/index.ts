@@ -8,10 +8,10 @@ Random.extend({
     const randomBoolean = Random.boolean();
     return {
       type: "text",
-      id: Random.id(),
-      userIdFrom: randomBoolean ? userId1 : userId2,
-      userIdTo: randomBoolean ? userId2 : userId1,
-      content: { text: Random.cparagraph() },
+      messageID: Random.id(),
+      senderID: randomBoolean ? userId1 : userId2,
+      recipientID: randomBoolean ? userId2 : userId1,
+      content: Random.cparagraph(),
     };
   },
 });
@@ -24,12 +24,12 @@ const mock: Array<MockMethod> = [
       return Mock.mock({
         "list|10": [
           {
-            id: "@id",
+            postID: "@id",
             title: "@ctitle",
-            postTime: "@datetime",
+            dateTime: "@datetime",
           },
         ],
-      });
+      }).list;
     },
   },
   {
@@ -37,9 +37,9 @@ const mock: Array<MockMethod> = [
     method: "get",
     response: (opt: { query: { id: string } }) => {
       return Mock.mock({
-        id: opt.query.id,
+        postID: opt.query.id,
         title: "@ctitle",
-        postTime: "@datetime",
+        dateTime: "@datetime",
         content: "@cparagraph",
       });
     },
@@ -51,34 +51,42 @@ const mock: Array<MockMethod> = [
       return Mock.mock({
         "list|10": [
           {
-            id: "@id",
+            postID: "@id",
             title: "@ctitle",
-            postTime: "@datetime",
+            dateTime: "@datetime",
           },
         ],
-      });
+      }).list;
     },
   },
   {
-    url: "/api/message/users",
+    url: "/api/messages",
     method: "get",
-    response: () => {
+    response: (opt: { headers: { testid: string } }) => {
       return Mock.mock({
-        "list|10": [
-          {
-            id: "@id",
-            name: "@cname",
-          },
-        ],
+        "list|10": ["@chat(" + opt.headers.testid + ", @id)"],
+      }).list;
+    },
+  },
+  {
+    url: "/api/users/login",
+    method: "post",
+    response: (opt: { body: { username: string; password: string } }) => {
+      return Mock.mock({
+        userID: "@id",
+        username: opt.body.username,
+        email: "@email",
       });
     },
   },
   {
-    url: "/api/message/:id",
+    url: "/api/users/:id",
     method: "get",
     response: (opt: { query: { id: string } }) => {
       return Mock.mock({
-        "list|10": ["@chat(" + opt.query.id + ", @id)"],
+        userID: opt.query.id,
+        username: "@cname",
+        email: "@email",
       });
     },
   },
