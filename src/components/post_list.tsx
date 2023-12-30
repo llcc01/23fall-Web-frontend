@@ -6,7 +6,7 @@ import { useWindowSize } from "react-use";
 
 export const PostList = (props: {
   data: Post[];
-  options?: { title: string; onClick: (postId: string) => void }[];
+  options?: { title: string; onClick: (postID: string) => void }[];
 }) => {
   const navigate = useNavigate();
   const columns = [
@@ -18,7 +18,7 @@ export const PostList = (props: {
           link
           onClick={() => {
             if (record) {
-              navigate(`/posts/${record.id}/view`);
+              navigate(`/posts/${record.postID}/view`);
             }
           }}
         >
@@ -28,13 +28,13 @@ export const PostList = (props: {
     },
     {
       title: "发布时间",
-      dataIndex: "postTime",
+      dataIndex: "dateTime",
     },
     ...(props.options
       ? [
           {
             title: "操作",
-            dataIndex: "id",
+            dataIndex: "postID",
             render: (text: string) => {
               return (
                 <>
@@ -45,6 +45,7 @@ export const PostList = (props: {
                         item.onClick(text);
                       }}
                       style={{ marginRight: 10 }}
+                      key={item.title}
                     >
                       {item.title}
                     </Typography.Text>

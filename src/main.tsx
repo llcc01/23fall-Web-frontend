@@ -3,9 +3,10 @@ import ReactDOM from "react-dom/client";
 import App from "./App.tsx";
 import "./index.css";
 import { RouterProvider, createHashRouter } from "react-router-dom";
-import { MyPostListPage, PostDetailPage , PostListPage } from "./pages/post.tsx";
-import { UserInfoPage } from "./pages/user.tsx";
+import { MyPostListPage, PostDetailPage, PostEditPage, PostListPage } from "./pages/post.tsx";
+import { MyInfoPage } from "./pages/user.tsx";
 import { MessagePage } from "./pages/message.tsx";
+import { LoginPage, RegisterPage } from "./pages/login.tsx";
 
 const router = createHashRouter([
   {
@@ -20,7 +21,7 @@ const router = createHashRouter([
     path: "/posts/:id/edit",
     element: (
       <App mode="edit">
-        <PostDetailPage />
+        <PostEditPage />
       </App>
     ),
   },
@@ -41,7 +42,7 @@ const router = createHashRouter([
     ),
   },
   {
-    path: "/myPost",
+    path: "/my_post",
     element: (
       <App mode="myPost">
         <MyPostListPage />
@@ -49,10 +50,26 @@ const router = createHashRouter([
     ),
   },
   {
-    path: "/myInfo",
+    path: "/my_info",
     element: (
       <App mode="myInfo">
-        <UserInfoPage />
+        <MyInfoPage />
+      </App>
+    ),
+  },
+  {
+    path: "/login",
+    element: (
+      <App mode="login">
+        <LoginPage />
+      </App>
+    ),
+  },
+  {
+    path: "/register",
+    element: (
+      <App mode="register">
+        <RegisterPage />
       </App>
     ),
   },

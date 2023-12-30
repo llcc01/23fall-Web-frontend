@@ -1,13 +1,24 @@
 export type Post = {
-  id: string;
+  postID: string;
   title: string;
-  postTime: string;
-  userId?: string;
-  userName?: string;
+  dateTime: string;
+  userID?: string;
+  username?: string;
   content?: string;
+  images?: string[];
 };
 
 export type User = {
+  userID: string;
+  username: string;
+  password?: string;
+  email?: string;
+};
+
+export type Message = {
   id: string;
-  name: string;
+  senderID: string;
+  recipientID: string;
+  content: string;
+  dateTime: string;
 };
