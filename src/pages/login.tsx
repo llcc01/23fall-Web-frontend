@@ -1,4 +1,4 @@
-import { Button, Form } from "@douyinfe/semi-ui";
+import { Button, Form, Toast } from "@douyinfe/semi-ui";
 import { useNavigate } from "react-router-dom";
 import { useAuth } from "../utils/auth";
 import { User } from "../../types";
@@ -16,7 +16,7 @@ export const LoginPage = () => {
     <div style={{ maxWidth: 200, margin: "0 auto" }}>
       <Form onSubmit={handleSubmit}>
         <Form.Input field="username" label="用户名" />
-        <Form.Input field="password" label="密码" />
+        <Form.Input field="password" label="密码" mode="password" />
         <Button htmlType="submit">登录</Button>
         <Button
           onClick={() => navigate("/register")}
@@ -34,7 +34,8 @@ export const RegisterPage = () => {
   const navigate = useNavigate();
   const handleSubmit = (values: User) => {
     register(values).then(() => {
-      navigate("/");
+      Toast.success("注册成功");
+      navigate("/login");
     });
   };
 
@@ -42,7 +43,7 @@ export const RegisterPage = () => {
     <div style={{ maxWidth: 200, margin: "0 auto" }}>
       <Form onSubmit={handleSubmit}>
         <Form.Input field="username" label="用户名" />
-        <Form.Input field="password" label="密码" />
+        <Form.Input field="password" label="密码" mode="password" />
         <Form.Input field="email" label="邮箱" />
         <Button htmlType="submit">注册</Button>
       </Form>

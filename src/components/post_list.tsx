@@ -29,6 +29,9 @@ export const PostList = (props: {
     {
       title: "发布时间",
       dataIndex: "dateTime",
+      render: (text: string) => {
+        return new Date(text).toLocaleString();
+      }
     },
     ...(props.options
       ? [

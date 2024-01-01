@@ -1,4 +1,4 @@
-import { Button, Form, Layout, List, Modal } from "@douyinfe/semi-ui";
+import { Button, Form, Layout, List, Modal, Popover } from "@douyinfe/semi-ui";
 import axios from "axios";
 import { useEffect, useState } from "react";
 import { Message, User } from "../../types";
@@ -66,16 +66,37 @@ const ChatView = (props: {
         props.onSend?.(type, content);
       });
   };
+  const onDelete = (messageId: string) => {
+    console.log(messageId);
+    axios.delete(`/api/messages/${messageId}`).then(() => {
+      props.onSend?.("text", "");
+    });
+  };
 
   const renderMessageContent = (message: MessageProps) => {
     const { type, content } = message;
     switch (type) {
       case "text":
-        return <Bubble content={content.text} />;
+        return (
+          <Bubble>
+            <Popover
+              content={
+                <Button
+                  onClick={() => {
+                    onDelete(String(message._id));
+                  }}
+                >
+                  删除
+                </Button>
+              }
+            >
+              {content.text}
+            </Popover>
+          </Bubble>
+        );
       case "image":
         return (
           <Bubble type="image">
-            {" "}
             <img src={content.picUrl} alt="" />
           </Bubble>
         );
@@ -151,16 +172,25 @@ export const MessagePage = () => {
       return;
     }
     resetList(
-      messageList.map((item) => {
-        return {
-          _id: item.id,
-          type: "text",
-          content: { text: item.content },
-          position: item.senderID === user.userID ? "right" : "left",
-        };
-      })
+      messageList
+        .filter(
+          (item) =>
+            (item.senderID === user.userID &&
+              item.recipientID === peerUserId) ||
+            (item.senderID === peerUserId && item.recipientID === user.userID)
+        )
+        .map((item) => {
+          return {
+            _id: item.messageID,
+            type: "text",
+            content: {
+              text: item.content,
+            },
+            position: item.senderID === user.userID ? "right" : "left",
+          };
+        })
     );
-  // eslint-disable-next-line react-hooks/exhaustive-deps
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [peerUserId, user, messageList]);
 
   const [modalVisible, setModalVisible] = useState<boolean>(false);

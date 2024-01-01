@@ -3,9 +3,8 @@ export type Post = {
   title: string;
   dateTime: string;
   userID?: string;
-  username?: string;
   content?: string;
-  images?: string[];
+  imagePathArray?: string[];
 };
 
 export type User = {
@@ -16,7 +15,7 @@ export type User = {
 };
 
 export type Message = {
-  id: string;
+  messageID: string;
   senderID: string;
   recipientID: string;
   content: string;

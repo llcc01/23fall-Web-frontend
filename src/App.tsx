@@ -16,10 +16,10 @@ const App = (props: { mode?: string; children?: JSX.Element }) => {
         navigate("/message");
         break;
       case "myPost":
-        navigate("/my_post");
+        navigate("/users/my/posts");
         break;
       case "myInfo":
-        navigate("/my_info");
+        navigate("/users/my/info");
         break;
       default:
         break;
@@ -36,7 +36,7 @@ const App = (props: { mode?: string; children?: JSX.Element }) => {
   }, [isDarkMode]);
 
   useEffect(() => {
-    localStorage.removeItem("userInfoList");
+    sessionStorage.removeItem("userInfoList");
     console.log("remove userInfoList");
   }, []);
 
