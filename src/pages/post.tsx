@@ -6,7 +6,9 @@ import { PostList } from "../components/post_list";
 import { useAuth } from "../utils/auth";
 import {
   Button,
+  Card,
   Carousel,
+  Descriptions,
   Form,
   Input,
   Toast,
@@ -16,19 +18,31 @@ import {
 import { IconPlus } from "@douyinfe/semi-icons";
 import { FileItem } from "@douyinfe/semi-ui/lib/es/upload";
 import { getUserInfo } from "../utils/userInfo";
+import { Data } from "@douyinfe/semi-ui/lib/es/descriptions";
 
 export const PostListPage = () => {
   const [data, setData] = useState<Post[]>([]);
   useEffect(() => {
     axios.get("/api/posts").then((res) => {
       console.log(res.data);
-      setData(res.data);
+      const promises = res.data.map(async (item: Post) => {
+        const res = await getUserInfo(item.userID ?? "");
+        item.username = res.username;
+        return item;
+      });
+      Promise.all(promises).then((res) => {
+        setData(res);
+      });
     });
     return () => {
       setData([]);
     };
   }, []);
-  return <PostList data={data} />;
+  return (
+    <div>
+      <PostList data={data} showUser />
+    </div>
+  );
 };
 
 export const UserPostListPage = () => {
@@ -76,7 +90,7 @@ export const SearchPostListPage = () => {
     };
   }, [keyword]);
   return (
-    <>
+    <div>
       <Input
         defaultValue={keyword}
         placeholder="搜索"
@@ -93,7 +107,7 @@ export const SearchPostListPage = () => {
       ></Input>
       <Button onClick={() => navigate(`/posts/search/${v}`)}>搜索</Button>
       <PostList data={data} />
-    </>
+    </div>
   );
 };
 
@@ -152,9 +166,8 @@ export const MyPostListPage = () => {
 
 export const PostDetailPage = () => {
   const { id } = useParams<{ id: string }>();
-  const [data, setData] = useState<Post | null>(null);
-  const [user, setUser] = useState<User | null>(null);
-  const [dateTime, setDateTime] = useState<string>("");
+  const [post, setData] = useState<Post | null>(null);
+  const [desData, setDesData] = useState<Data[]>([]);
 
   const navigate = useNavigate();
 
@@ -162,9 +175,28 @@ export const PostDetailPage = () => {
     axios.get(`/api/posts/${id}`).then((res) => {
       console.log(res.data);
       setData(res.data);
-      setDateTime(new Date(res.data.dateTime).toLocaleString());
-      getUserInfo(res.data.userID).then((res) => {
-        setUser(res);
+      getUserInfo(res.data.userID).then((user) => {
+        setDesData([
+          {
+            key: "作者",
+            value: (
+              <Typography.Text
+                link
+                onClick={() => {
+                  if (user) {
+                    navigate(`/users/${user.userID}/info`);
+                  }
+                }}
+              >
+                {user?.username}
+              </Typography.Text>
+            ),
+          },
+          {
+            key: "发布时间",
+            value: new Date(res.data.dateTime).toLocaleString(),
+          },
+        ]);
       });
     });
     return () => {
@@ -172,38 +204,40 @@ export const PostDetailPage = () => {
     };
   }, [id]);
   return (
-    <div>
-      <h1>{data?.title}</h1>
-      <p>{dateTime}</p>
-      <p>
-        作者：
-        <Typography.Text
-          link
-          onClick={() => {
-            if (user) {
-              navigate(`/users/${user.userID}/info`);
-            }
-          }}
-        >
-          {user?.username}
-        </Typography.Text>
-      </p>
-      <p>{data?.content}</p>
-      <Carousel style={{ width: "100%", height: 400, maxHeight: "80vh" }}>
-        {data?.imagePathArray?.map((item) => (
-          <img
-            src={item}
-            alt=""
-            style={{
-              width: "100%",
-              height: "100%",
-              objectFit: "contain",
-            }}
-            key={item}
-          />
-        ))}
-      </Carousel>
-    </div>
+    <Card>
+      <div
+        style={{
+          margin: "0 auto",
+          width: "fit-content",
+        }}
+      >
+        <h1>{post?.title}</h1>
+        <Descriptions data={desData} align="left" />
+      </div>
+      <Card
+        style={{
+          marginBottom: 10,
+        }}
+      >
+        {post?.content}
+      </Card>
+      {
+        <Carousel style={{ width: "100%", height: 400, maxHeight: "80vh" }}>
+          {post?.imagePathArray?.map((item) => (
+            <img
+              src={item}
+              alt=""
+              style={{
+                width: "100%",
+                height: "100%",
+                objectFit: "contain",
+              }}
+              key={item}
+            />
+          ))}
+        </Carousel>
+      }
+    </Card>
   );
 };
 
@@ -260,14 +294,7 @@ export const PostEditPage = () => {
   return (
     data && (
       <>
-        <Form
-          onSubmit={handleSubmit}
-          initValues={data}
-          style={{
-            maxWidth: 800,
-            margin: "0 auto",
-          }}
-        >
+        <Form onSubmit={handleSubmit} initValues={data}>
           <Form.Input field="title" label="标题" />
           <Form.TextArea field="content" label="内容" autosize />
 

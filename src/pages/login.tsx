@@ -1,4 +1,4 @@
-import { Button, Form, Toast } from "@douyinfe/semi-ui";
+import { Button, Card, Form, Toast } from "@douyinfe/semi-ui";
 import { useNavigate } from "react-router-dom";
 import { useAuth } from "../utils/auth";
 import { User } from "../../types";
@@ -7,15 +7,17 @@ export const LoginPage = () => {
   const { login } = useAuth();
   const navigate = useNavigate();
   const handleSubmit = (values: { username: string; password: string }) => {
-    login(values).then(() => {
-      navigate("/");
-    }).catch((e)=>{
-      Toast.error(e.response.data);
-    });
+    login(values)
+      .then(() => {
+        navigate("/");
+      })
+      .catch((e) => {
+        Toast.error(e.response.data);
+      });
   };
 
   return (
-    <div style={{ maxWidth: 200, margin: "0 auto" }}>
+    <Card style={{ maxWidth: 300, margin: "0 auto" }}>
       <Form onSubmit={handleSubmit}>
         <Form.Input field="username" label="用户名" />
         <Form.Input field="password" label="密码" mode="password" />
@@ -27,7 +29,7 @@ export const LoginPage = () => {
           前往注册
         </Button>
       </Form>
-    </div>
+    </Card>
   );
 };
 
@@ -35,22 +37,24 @@ export const RegisterPage = () => {
   const { register } = useAuth();
   const navigate = useNavigate();
   const handleSubmit = (values: User) => {
-    register(values).then(() => {
-      Toast.success("注册成功");
-      navigate("/login");
-    }).catch((e)=>{
-      Toast.error(e.response.data);
-    });
+    register(values)
+      .then(() => {
+        Toast.success("注册成功");
+        navigate("/login");
+      })
+      .catch((e) => {
+        Toast.error(e.response.data);
+      });
   };
 
   return (
-    <div style={{ maxWidth: 200, margin: "0 auto" }}>
+    <Card style={{ maxWidth: 300, margin: "0 auto" }}>
       <Form onSubmit={handleSubmit}>
         <Form.Input field="username" label="用户名" />
         <Form.Input field="password" label="密码" mode="password" />
         <Form.Input field="email" label="邮箱" />
         <Button htmlType="submit">注册</Button>
       </Form>
-    </div>
+    </Card>
   );
 };

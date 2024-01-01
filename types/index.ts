@@ -3,6 +3,7 @@ export type Post = {
   title: string;
   dateTime: string;
   userID?: string;
+  username?: string;
   content?: string;
   imagePathArray?: string[];
 };

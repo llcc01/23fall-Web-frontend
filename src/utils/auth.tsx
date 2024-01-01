@@ -17,9 +17,7 @@ export const useAuth = () => {
     setUser(null);
   };
   const register = async (values: User) => {
-    const res = await axios.post("/api/users/register", values);
-    sessionStorage.setItem("user", JSON.stringify(res.data));
-    setUser(res.data);
+    await axios.post("/api/users/register", values);
   };
   const update = async (values: User) => {
     const res = await axios.put(`/api/users/${values.userID}`, values);

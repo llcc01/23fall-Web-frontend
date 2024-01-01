@@ -6,6 +6,7 @@ import { useWindowSize } from "react-use";
 
 export const PostList = (props: {
   data: Post[];
+  showUser?: boolean;
   options?: { title: string; onClick: (postID: string) => void }[];
 }) => {
   const navigate = useNavigate();
@@ -26,12 +27,32 @@ export const PostList = (props: {
         </Typography.Text>
       ),
     },
+    ...(props.showUser
+      ? [
+          {
+            title: "作者",
+            dataIndex: "userID",
+            render: (_: string, record: Post) => (
+              <Typography.Text
+                link
+                onClick={() => {
+                  if (record) {
+                    navigate(`/users/${record.userID}/info`);
+                  }
+                }}
+              >
+                {record.username}
+              </Typography.Text>
+            ),
+          },
+        ]
+      : []),
     {
       title: "发布时间",
       dataIndex: "dateTime",
       render: (text: string) => {
         return new Date(text).toLocaleString();
-      }
+      },
     },
     ...(props.options
       ? [

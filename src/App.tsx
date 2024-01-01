@@ -45,14 +45,35 @@ const App = (props: { mode?: string; children?: JSX.Element }) => {
 
   return (
     <div style={{ padding: 10 }}>
-      <Tabs activeKey={props.mode ?? "list"} onTabClick={onTabClick}>
-        <Tabs.TabPane tab="帖子" itemKey="list" />
-        <Tabs.TabPane tab="搜索" itemKey="search" />
-        <Tabs.TabPane tab="站内信" itemKey="message" />
-        <Tabs.TabPane tab="我的帖子" itemKey="myPost" />
-        <Tabs.TabPane tab="我的信息" itemKey="myInfo" />
-      </Tabs>
-      <div style={{ height: "calc(100vh - 100px)" }}>{props.children}</div>
+      <div
+        style={{
+          display: "flex",
+          justifyContent: "center",
+          alignItems: "center",
+          marginBottom: 10,
+        }}
+      >
+        <Tabs
+          activeKey={props.mode ?? "list"}
+          onTabClick={onTabClick}
+          type="button"
+        >
+          <Tabs.TabPane tab="帖子" itemKey="list" />
+          <Tabs.TabPane tab="搜索" itemKey="search" />
+          <Tabs.TabPane tab="站内信" itemKey="message" />
+          <Tabs.TabPane tab="我的帖子" itemKey="myPost" />
+          <Tabs.TabPane tab="我的信息" itemKey="myInfo" />
+        </Tabs>
+      </div>
+      <div
+        style={{
+          height: "calc(100vh - 100px)",
+          maxWidth: 1000,
+          margin: "0 auto",
+        }}
+      >
+        {props.children}
+      </div>
     </div>
   );
 };

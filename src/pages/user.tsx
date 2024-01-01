@@ -1,5 +1,6 @@
 import {
   Button,
+  Card,
   Descriptions,
   Form,
   Toast,
@@ -27,7 +28,7 @@ export const MyInfoPage = () => {
     });
   };
   return (
-    <div style={{ maxWidth: 200, margin: "0 auto" }}>
+    <Card style={{ maxWidth: 300, margin: "0 auto" }}>
       <Form onSubmit={handleSubmit} initValues={user}>
         <Form.Input
           field="userID"
@@ -56,7 +57,7 @@ export const MyInfoPage = () => {
           退出登录
         </Button>
       </Form>
-    </div>
+    </Card>
   );
 };
 
@@ -88,14 +89,14 @@ export const UserInfoPage = () => {
     });
   }, [userId]);
   return (
-    <div
+    <Card
       style={{
         maxWidth: 200,
         margin: "0 auto",
       }}
+      header="用户信息"
     >
-      <p>用户信息</p>
-      <Descriptions data={userInfo} />
+      <Descriptions data={userInfo} align="left" />
       <Typography.Text
         link
         onClick={() => {
@@ -104,6 +105,6 @@ export const UserInfoPage = () => {
       >
         Ta 的帖子
       </Typography.Text>
-    </div>
+    </Card>
   );
 };
