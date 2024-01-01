@@ -8,6 +8,7 @@ import {
   PostDetailPage,
   PostEditPage,
   PostListPage,
+  SearchPostListPage,
   UserPostListPage,
 } from "./pages/post.tsx";
 import { MyInfoPage, UserInfoPage } from "./pages/user.tsx";
@@ -28,6 +29,22 @@ const router = createHashRouter([
     element: (
       <App mode="edit">
         <PostEditPage />
+      </App>
+    ),
+  },
+  {
+    path: "/posts/search/",
+    element: (
+      <App mode="search">
+        <SearchPostListPage />
+      </App>
+    ),
+  },
+  {
+    path: "/posts/search/:keyword",
+    element: (
+      <App mode="search">
+        <SearchPostListPage />
       </App>
     ),
   },

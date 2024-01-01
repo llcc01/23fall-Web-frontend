@@ -8,6 +8,7 @@ import {
   Button,
   Carousel,
   Form,
+  Input,
   Toast,
   Typography,
   Upload,
@@ -52,6 +53,45 @@ export const UserPostListPage = () => {
   return (
     <>
       <h1>{user?.username}的帖子</h1>
+      <PostList data={data} />
+    </>
+  );
+};
+
+export const SearchPostListPage = () => {
+  const [data, setData] = useState<Post[]>([]);
+  const { keyword } = useParams();
+  const [v, setV] = useState<string>("");
+  const navigate = useNavigate();
+  useEffect(() => {
+    if (!keyword) {
+      return;
+    }
+    axios.get(`/api/posts/search/${keyword}`).then((res) => {
+      console.log(res.data);
+      setData(res.data);
+    });
+    return () => {
+      setData([]);
+    };
+  }, [keyword]);
+  return (
+    <>
+      <Input
+        defaultValue={keyword}
+        placeholder="搜索"
+        onChange={(v: string) => {
+          setV(v);
+        }}
+        onEnterPress={() => {
+          navigate(`/posts/search/${v}`);
+        }}
+        style={{
+          margin: 10,
+          width: 200,
+        }}
+      ></Input>
+      <Button onClick={() => navigate(`/posts/search/${v}`)}>搜索</Button>
       <PostList data={data} />
     </>
   );

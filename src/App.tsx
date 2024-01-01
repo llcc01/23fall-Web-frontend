@@ -21,6 +21,9 @@ const App = (props: { mode?: string; children?: JSX.Element }) => {
       case "myInfo":
         navigate("/users/my/info");
         break;
+      case "search":
+        navigate("/posts/search/");
+        break;
       default:
         break;
     }
@@ -44,6 +47,7 @@ const App = (props: { mode?: string; children?: JSX.Element }) => {
     <div style={{ padding: 10 }}>
       <Tabs activeKey={props.mode ?? "list"} onTabClick={onTabClick}>
         <Tabs.TabPane tab="帖子" itemKey="list" />
+        <Tabs.TabPane tab="搜索" itemKey="search" />
         <Tabs.TabPane tab="站内信" itemKey="message" />
         <Tabs.TabPane tab="我的帖子" itemKey="myPost" />
         <Tabs.TabPane tab="我的信息" itemKey="myInfo" />
