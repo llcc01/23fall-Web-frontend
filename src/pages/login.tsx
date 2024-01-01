@@ -9,6 +9,8 @@ export const LoginPage = () => {
   const handleSubmit = (values: { username: string; password: string }) => {
     login(values).then(() => {
       navigate("/");
+    }).catch((e)=>{
+      Toast.error(e.response.data);
     });
   };
 
@@ -36,6 +38,8 @@ export const RegisterPage = () => {
     register(values).then(() => {
       Toast.success("注册成功");
       navigate("/login");
+    }).catch((e)=>{
+      Toast.error(e.response.data);
     });
   };
 
