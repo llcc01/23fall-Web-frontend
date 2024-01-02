@@ -3,8 +3,9 @@ import type { Post, User } from "../../types";
 import { useEffect, useState } from "react";
 import axios from "axios";
 import { PostList } from "../components/post_list";
-import { useAuth } from "../utils/auth";
+import type { Auth } from "../utils/auth";
 import {
+  Avatar,
   Button,
   Card,
   Carousel,
@@ -27,7 +28,7 @@ export const PostListPage = () => {
       console.log(res.data);
       const promises = res.data.map(async (item: Post) => {
         const res = await getUserInfo(item.userID ?? "");
-        item.username = res.username;
+        item.username = res?.username;
         return item;
       });
       Promise.all(promises).then((res) => {
@@ -83,7 +84,14 @@ export const SearchPostListPage = () => {
     }
     axios.get(`/api/posts/search/${keyword}`).then((res) => {
       console.log(res.data);
-      setData(res.data);
+      const promises = res.data.map(async (item: Post) => {
+        const res = await getUserInfo(item.userID ?? "");
+        item.username = res?.username;
+        return item;
+      });
+      Promise.all(promises).then((res) => {
+        setData(res);
+      });
     });
     return () => {
       setData([]);
@@ -91,30 +99,40 @@ export const SearchPostListPage = () => {
   }, [keyword]);
   return (
     <div>
-      <Input
-        defaultValue={keyword}
-        placeholder="搜索"
-        onChange={(v: string) => {
-          setV(v);
-        }}
-        onEnterPress={() => {
-          navigate(`/posts/search/${v}`);
-        }}
+      <div
         style={{
-          margin: 10,
-          width: 200,
+          display: "flex",
+          justifyContent: "center",
+          alignItems: "center",
+          marginBottom: 10,
         }}
-      ></Input>
-      <Button onClick={() => navigate(`/posts/search/${v}`)}>搜索</Button>
-      <PostList data={data} />
+      >
+        <Input
+          defaultValue={keyword}
+          placeholder="搜索"
+          onChange={(v: string) => {
+            setV(v);
+          }}
+          onEnterPress={() => {
+            navigate(`/posts/search/${v}`);
+          }}
+          style={{
+            width: 200,
+            marginRight: 10,
+          }}
+        ></Input>
+
+        <Button onClick={() => navigate(`/posts/search/${v}`)}>搜索</Button>
+      </div>
+      <PostList data={data} showUser />
     </div>
   );
 };
 
-export const MyPostListPage = () => {
+export const MyPostListPage = (props: { auth: Auth }) => {
   const [data, setData] = useState<Post[]>([]);
   const navigate = useNavigate();
-  const { user } = useAuth();
+  const { user } = props.auth;
   useEffect(() => {
     if (!user) {
       navigate("/login");
@@ -167,6 +185,7 @@ export const MyPostListPage = () => {
 export const PostDetailPage = () => {
   const { id } = useParams<{ id: string }>();
   const [post, setData] = useState<Post | null>(null);
+  const [avatar, setAvatar] = useState<string | undefined>(undefined);
   const [desData, setDesData] = useState<Data[]>([]);
 
   const navigate = useNavigate();
@@ -197,6 +216,7 @@ export const PostDetailPage = () => {
             value: new Date(res.data.dateTime).toLocaleString(),
           },
         ]);
+        setAvatar(user?.avatarPath);
       });
     });
     return () => {
@@ -207,12 +227,31 @@ export const PostDetailPage = () => {
     <Card>
       <div
         style={{
-          margin: "0 auto",
+          // margin: "0 auto",
+          marginLeft: 30,
           width: "fit-content",
         }}
       >
         <h1>{post?.title}</h1>
-        <Descriptions data={desData} align="left" />
+        <div
+          style={{
+            display: "flex",
+            alignItems: "center",
+          }}
+        >
+          <Avatar
+            src={avatar}
+            size="default"
+            style={{
+              margin: 10,
+            }}
+            alt="头像"
+            onClick={() => {
+              navigate("/users/my/info");
+            }}
+          />
+          <Descriptions data={desData} align="left" />
+        </div>
       </div>
       <Card
         style={{
@@ -280,7 +319,8 @@ export const PostEditPage = () => {
       axios.post("/api/posts", values).then((res) => {
         console.log(res.data);
         Toast.success("保存成功");
-        navigate(`/posts/${res.data.postID}/edit`);
+        // navigate(`/posts/${res.data.postID}/edit`);
+        navigate("/");
       });
       return;
     }
@@ -288,6 +328,7 @@ export const PostEditPage = () => {
     axios.put(`/api/posts/${id}`, values).then((res) => {
       console.log(res.data);
       Toast.success("保存成功");
+      navigate("/");
     });
   };
 
@@ -336,7 +377,7 @@ export const PostEditPage = () => {
             listType="picture"
             defaultFileList={fileList}
             style={{
-              margin: 10,
+              marginBottom: 10,
             }}
           >
             <IconPlus size="extra-large" />

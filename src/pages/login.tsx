@@ -1,10 +1,10 @@
 import { Button, Card, Form, Toast } from "@douyinfe/semi-ui";
 import { useNavigate } from "react-router-dom";
-import { useAuth } from "../utils/auth";
 import { User } from "../../types";
+import { Auth } from "../utils/auth";
 
-export const LoginPage = () => {
-  const { login } = useAuth();
+export const LoginPage = (props: { auth: Auth }) => {
+  const { login } = props.auth;
   const navigate = useNavigate();
   const handleSubmit = (values: { username: string; password: string }) => {
     login(values)
@@ -33,8 +33,8 @@ export const LoginPage = () => {
   );
 };
 
-export const RegisterPage = () => {
-  const { register } = useAuth();
+export const RegisterPage = (props: { auth: Auth }) => {
+  const { register } = props.auth;
   const navigate = useNavigate();
   const handleSubmit = (values: User) => {
     register(values)

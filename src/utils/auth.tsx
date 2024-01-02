@@ -2,6 +2,17 @@ import axios from "axios";
 import { useState } from "react";
 import { User } from "../../types";
 
+export const defaultAvatar =
+  "https://gw.alicdn.com/tfs/TB1DYHLwMHqK1RjSZFEXXcGMXXa-56-62.svg";
+
+export type Auth = {
+  user?: User | null;
+  login: (values: { username: string; password: string }) => Promise<void>;
+  logout: () => Promise<void>;
+  register: (values: User) => Promise<void>;
+  update: (values: User) => Promise<void>;
+};
+
 export const useAuth = () => {
   const [user, setUser] = useState<User | null>(
     JSON.parse(sessionStorage.getItem("user") || "null")

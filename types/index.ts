@@ -13,6 +13,7 @@ export type User = {
   username: string;
   password?: string;
   email?: string;
+  avatarPath?: string;
 };
 
 export type Message = {

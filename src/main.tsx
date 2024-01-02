@@ -3,113 +3,78 @@ import ReactDOM from "react-dom/client";
 import App from "./App.tsx";
 import "./index.css";
 import { RouterProvider, createHashRouter } from "react-router-dom";
-import {
-  MyPostListPage,
-  PostDetailPage,
-  PostEditPage,
-  PostListPage,
-  SearchPostListPage,
-  UserPostListPage,
-} from "./pages/post.tsx";
-import { MyInfoPage, UserInfoPage } from "./pages/user.tsx";
-import { MessagePage } from "./pages/message.tsx";
-import { LoginPage, RegisterPage } from "./pages/login.tsx";
 
 const router = createHashRouter([
   {
     path: "/posts/:id/view",
     element: (
-      <App mode="detail">
-        <PostDetailPage />
-      </App>
+      <App mode="detail"/>
     ),
   },
   {
     path: "/posts/:id/edit",
     element: (
-      <App mode="edit">
-        <PostEditPage />
-      </App>
+      <App mode="edit"/>
     ),
   },
   {
     path: "/posts/search/",
     element: (
-      <App mode="search">
-        <SearchPostListPage />
-      </App>
+      <App mode="search"/>
     ),
   },
   {
     path: "/posts/search/:keyword",
     element: (
-      <App mode="search">
-        <SearchPostListPage />
-      </App>
+      <App mode="search"/>
     ),
   },
   {
     path: "/",
     element: (
-      <App mode="list">
-        <PostListPage />
-      </App>
+      <App mode="list"/>
     ),
   },
   {
     path: "/message",
     element: (
-      <App mode="message">
-        <MessagePage />
-      </App>
+      <App mode="message"/>
     ),
   },
   {
     path: "/users/:userId/posts",
     element: (
-      <App mode="userInfo">
-        <UserPostListPage />
-      </App>
+      <App mode="userPost"/>
     ),
   },
   {
     path: "/users/my/posts",
     element: (
-      <App mode="myPost">
-        <MyPostListPage />
-      </App>
+      <App mode="myPost"/>
     ),
   },
   {
     path: "/users/:userId/info",
     element: (
-      <App mode="userInfo">
-        <UserInfoPage />
-      </App>
+      <App mode="userInfo"/>
     ),
   },
   {
     path: "/users/my/info",
     element: (
-      <App mode="myInfo">
-        <MyInfoPage />
-      </App>
+      <App mode="myInfo"/>
     ),
   },
   {
     path: "/login",
     element: (
-      <App mode="login">
-        <LoginPage />
-      </App>
+      <App mode="login"/>
     ),
   },
   {
     path: "/register",
     element: (
-      <App mode="register">
-        <RegisterPage />
-      </App>
+      <App mode="register"/>
     ),
   },
 ]);

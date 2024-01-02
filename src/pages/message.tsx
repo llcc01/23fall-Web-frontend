@@ -1,6 +1,6 @@
 import { Button, Form, Layout, List, Modal, Popover } from "@douyinfe/semi-ui";
 import axios from "axios";
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { Message, User } from "../../types";
 import Chat, { Bubble, useMessages } from "@chatui/core";
 
@@ -8,20 +8,24 @@ import "@chatui/core/es/styles/index.less";
 import type { MessageProps } from "@chatui/core";
 import "@chatui/core/dist/index.css";
 import "../chatui-theme.css";
-import { useAuth } from "../utils/auth";
 import { getUserInfo } from "../utils/userInfo";
 import { useNavigate } from "react-router-dom";
 import { useEffectOnce } from "react-use";
+import { Auth } from "../utils/auth";
 
 const UserList = (props: {
   userIds: string[];
-  onUserClick: (id: string, name: string) => void;
+  onUserClick: (id: string, name: string, avatar: string) => void;
 }) => {
   const [users, setUsers] = useState<User[]>([]);
   useEffect(() => {
+    console.log(props.userIds);
     const newUsers: User[] = [];
     const promises = props.userIds.map(async (id) => {
       const res = await getUserInfo(id);
+      if (!res) {
+        return;
+      }
       newUsers.push(res);
     });
     Promise.all(promises).then(() => {
@@ -29,13 +33,17 @@ const UserList = (props: {
     });
   }, [props.userIds]);
   return (
-    <div style={{ height: "calc(100% - 100)" }}>
+    <div style={{ height: "calc(100% - 100)", width: 100 }}>
       <List
         dataSource={users}
         renderItem={(item: User) => (
           <List.Item
             onClick={() => {
-              props.onUserClick(item.userID, item.username);
+              props.onUserClick(
+                item.userID,
+                item.username,
+                item.avatarPath ?? ""
+              );
             }}
             style={{ cursor: "pointer" }}
           >
@@ -115,18 +123,22 @@ const ChatView = (props: {
   );
 };
 
-export const MessagePage = () => {
+export const MessagePage = (props: { auth: Auth }) => {
   const navigate = useNavigate();
 
   const [peerUserId, setPeerUserId] = useState<string>("");
+  const newPeerUserId = useRef<string>("");
   const [peerUsername, setPeerUsername] = useState<string>("");
-  const onUserClick = (id: string, name: string) => {
+  const [peerUserAvatar, setPeerUserAvatar] = useState<string>("");
+  const onUserClick = (id: string, name: string, avatar: string) => {
     console.log(id, name);
     setPeerUserId(id);
     setPeerUsername(name);
+    setPeerUserAvatar(avatar);
+    newPeerUserId.current = id;
   };
 
-  const { user } = useAuth();
+  const { user } = props.auth;
   const { messages, resetList } = useMessages();
   const [userIds, setUserIds] = useState<string[]>([]);
   const [messageList, setMessageList] = useState<Message[]>([]);
@@ -145,13 +157,21 @@ export const MessagePage = () => {
         setMessageList(res.data);
         setUserIds(
           Array.from(
-            new Set(
-              res.data.map((item: Message) => {
-                return item.senderID === user.userID
-                  ? item.recipientID
-                  : item.senderID;
-              })
-            )
+            new Set([
+              ...(newPeerUserId.current != "" ? [newPeerUserId.current] : []),
+              ...res.data
+                .filter((item: Message) => {
+                  return (
+                    item.senderID == user.userID ||
+                    item.recipientID == user.userID
+                  );
+                })
+                .map((item: Message) => {
+                  return String(item.senderID == user.userID
+                    ? item.recipientID
+                    : item.senderID);
+                }),
+            ])
           )
         );
       });
@@ -175,9 +195,9 @@ export const MessagePage = () => {
       messageList
         .filter(
           (item) =>
-            (item.senderID === user.userID &&
-              item.recipientID === peerUserId) ||
-            (item.senderID === peerUserId && item.recipientID === user.userID)
+            (item.senderID == user.userID &&
+              item.recipientID == peerUserId) ||
+            (item.senderID == peerUserId && item.recipientID == user.userID)
         )
         .map((item) => {
           return {
@@ -186,7 +206,13 @@ export const MessagePage = () => {
             content: {
               text: item.content,
             },
-            position: item.senderID === user.userID ? "right" : "left",
+            position: item.senderID == user.userID ? "right" : "left",
+            user: {
+              avatar:
+                item.senderID == user.userID
+                  ? user.avatarPath
+                  : peerUserAvatar,
+            },
           };
         })
     );
@@ -196,7 +222,9 @@ export const MessagePage = () => {
   const [modalVisible, setModalVisible] = useState<boolean>(false);
 
   const newMessage = (values: { peerUserId: string }) => {
-    setUserIds([...userIds, values.peerUserId]);
+    console.log(values);
+    newPeerUserId.current = values.peerUserId;
+    updateMessage();
     setModalVisible(false);
   };
 
